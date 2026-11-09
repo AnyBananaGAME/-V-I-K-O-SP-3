@@ -116,6 +116,56 @@ int gautiKaina(int vienetoKaina, int kiekis) {
     return vienetoKaina * kiekis;
 }
 
+void showReport(ostream &out, int kiekis) {
+  double suma = 0;
+  double nuolaida = 0;
+
+  out << "Uzsakymo ataskaita" << endl;
+  out << left << setw(18) << "Kategorija";
+  out << left << setw(52) << "Pavadinimas";
+  out << right << setw(10) << "Kaina";
+  out << setw(8) << "Kiekis";
+  out << setw(15) << "Suma";
+  out << setw(15) << "Nuolaida";
+  out << setw(15) << "Galutine Suma" << endl;
+
+  for (int i = 0; i < kiekis; i++) {
+    Uzsakymas uzsakymas = uzsakimai[i];
+    double eilutesSuma = uzsakymas.kaina * uzsakymas.kiekis;
+    double eilutesNuolaida = 0;
+    if (uzsakymas.kiekis >= 10) {
+      eilutesNuolaida = eilutesSuma / NUOLAIDA;
+    }
+
+    suma += eilutesSuma;
+    nuolaida += eilutesNuolaida;
+
+    out << left << setw(18) << uzsakymas.kategorija;
+    out << setw(52) << uzsakymas.pavadinimas;
+    out << right << fixed << setprecision(2) << setw(10) << uzsakymas.kaina;
+    out << setw(8) << uzsakymas.kiekis;
+    out << setw(15) << eilutesSuma;
+    out << setw(15) << eilutesNuolaida;
+    out << setw(15) << eilutesSuma - eilutesNuolaida << endl;
+  }
+
+  out << string(135, '-') << endl;
+  out << right << setw(98) << "Uzsakymo suma:" << setw(15) << suma << endl;
+  out << right << setw(98) << "Nuolaida:" << setw(15) << nuolaida << endl;
+  out << right << setw(98) << "Galutine suma:" << setw(15) << suma - nuolaida << endl;
+}
+
+void saveReport(int kiekis) {
+  ofstream fs("ataskaita.txt");
+  if (!fs) {
+    cout << "Nepavyko sukurti ataskaitos failo." << endl;
+    return;
+  }
+
+  showReport(fs, kiekis);
+  cout << "Ataskaita issaugota faile ataskaita.txt" << endl;
+}
+
 void calculatePrices(int kiekis, bool allCategories) {
     int kategorija;
     if(!allCategories) {
@@ -165,7 +215,7 @@ int main() {
     cout << "2. Perziureti tam skirta kategorija prekes" << endl;
     cout << "3. Suskaiciuoti suma, akcijas bei galutine suma." << endl;
     cout << "4. Suskaiciuoti suma, akcijas bei galutine suma tam skirtai kategirijai." << endl;
-    cout << "6. Perziureti ataskaita." << endl;
+    cout << "5. Perziureti ataskaita." << endl;
     cout << "6. Issaugoti visa ataskaita i faila." << endl;
     cout << "7. Iseiti." << endl;
     cout << "----------------------" << endl;
@@ -173,7 +223,7 @@ int main() {
     int pasirinkimas;
     cin >> pasirinkimas;
 
-    if (pasirinkimas < 1 || pasirinkimas > 5) {
+    if (pasirinkimas < 1 || pasirinkimas > 7) {
       cout << "!!! Netinkamas pasirinkimas !!!" << endl;
       continue;
     }
@@ -187,6 +237,12 @@ int main() {
       calculatePrices(kiekis, true);
     if (pasirinkimas == 4)
       calculatePrices(kiekis, false);
+    if (pasirinkimas == 5)
+      showReport(cout, kiekis);
+    if (pasirinkimas == 6)
+      saveReport(kiekis);
+    if (pasirinkimas == 7)
+      break;
 
   }
   return 0;
