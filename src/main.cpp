@@ -77,16 +77,22 @@ void showCategory(int kiekis, const string kategorijos[], const string pavadinim
   cout << right << fixed << setprecision(2) << setw(8) << "Kiekis";
   cout << endl;
 
+  bool radoPrekiu = false;
   for (int i = 0; i < kiekis; i++) {
     bool isSame = kategorijos[i] == kategorijuVardai[kategorija];
     if (!isSame)
       continue;
 
+    radoPrekiu = true;
     cout << left << setw(18) << kategorijos[i];
     cout << left << setw(52) << pavadinimai[i];
     cout << right << setw(10) << kainos[i];
     cout << right << setw(8) << kiekiai[i];
     cout << endl;
+  }
+
+  if (!radoPrekiu) {
+    cout << "Sioje kategorijoje prekiu nera." << endl;
   }
 }
 
