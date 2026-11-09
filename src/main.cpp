@@ -97,6 +97,23 @@ int gautiKaina(int vienetoKaina, int kiekis) {
     return vienetoKaina * kiekis;
 }
 
+double calculateCategoryTotal(string pasirinktaKategorija, int kiekis,
+                              const string kategorijos[], const double kainos[],
+                              const int kiekiai[]) {
+  double suma = 0;
+  for (int i = 0; i < kiekis; i++) {
+    if (kategorijos[i] == pasirinktaKategorija) {
+      double eilutesSuma = kainos[i] * kiekiai[i];
+      double nuolaida = 0;
+      if (kiekiai[i] >= 10) {
+        nuolaida = eilutesSuma / NUOLAIDA;
+      }
+      suma += eilutesSuma - nuolaida;
+    }
+  }
+  return suma;
+}
+
 void showReport(ostream &out, int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
   double suma = 0;
   double nuolaida = 0;
@@ -133,6 +150,13 @@ void showReport(ostream &out, int kiekis, const string kategorijos[], const stri
   out << right << setw(98) << "Uzsakymo suma:" << setw(15) << suma << endl;
   out << right << setw(98) << "Nuolaida:" << setw(15) << nuolaida << endl;
   out << right << setw(98) << "Galutine suma:" << setw(15) << suma - nuolaida << endl;
+  out << endl << "Sumos pagal kategorijas" << endl;
+  for (int i = 0; i < size(kategorijuVardai); i++) {
+    out << right << setw(98) << kategorijuVardai[i]
+        << fixed << setprecision(2) << setw(15)
+        << calculateCategoryTotal(kategorijuVardai[i], kiekis, kategorijos, kainos, kiekiai)
+        << endl;
+  }
 }
 
 void saveReport(int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
