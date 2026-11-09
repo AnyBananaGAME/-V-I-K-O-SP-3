@@ -5,20 +5,13 @@
 
 using namespace std;
 
-struct Uzsakymas {
-  string kategorija;
-  string pavadinimas;
-  double kaina;
-  int kiekis;
-};
 const int MAX_SIZE = 100;
 /// 10% nuolaida
 const int NUOLAIDA = 10;
 
-Uzsakymas uzsakimai[MAX_SIZE];
-string kategorijos[3] = {"Dviraciai", "Dalys", "Aksesuarai"};
+const string kategorijuVardai[3] = {"Dviraciai", "Dalys", "Aksesuarai"};
 
-int readFile() {
+int readFile(string kategorijos[], string pavadinimai[], double kainos[], int kiekiai[]) {
   ifstream fs("uzsakymas.txt");
   int kiekis;
   char trash;
@@ -28,27 +21,18 @@ int readFile() {
     return -1;
 
   for (int i = 0; i < kiekis; i++) {
-    Uzsakymas uzsakymas;
-    string temp;
-
     fs >> ws;
-    getline(fs, uzsakymas.kategorija, ';');
-    getline(fs, uzsakymas.pavadinimas, ';');
-    fs >> uzsakymas.kaina;
+    getline(fs, kategorijos[i], ';');
+    getline(fs, pavadinimai[i], ';');
+    fs >> kainos[i];
     fs.ignore(1);
-    fs >> uzsakymas.kiekis;
-
-    // cout << uzsakymas.kategorija << endl;
-    // cout << uzsakymas.pavadinimas << endl;
-    // cout <<  fixed << setprecision(2) << uzsakymas.kaina << endl;
-    // cout <<  fixed << setprecision(2) << uzsakymas.kiekis << endl;
-    uzsakimai[i] = uzsakymas;
+    fs >> kiekiai[i];
   }
 
   return kiekis;
 }
 
-void showAll(int kiekis) {
+void showAll(int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
   cout << left << setw(18) << "Kategorija";
   cout << left << setw(52) << "Pavadinimas";
   cout << right << fixed << setprecision(2) << setw(10) << "Kaina";
@@ -56,12 +40,10 @@ void showAll(int kiekis) {
   cout << endl;
 
   for (int i = 0; i < kiekis; i++) {
-    Uzsakymas uzsakymas = uzsakimai[i];
-
-    cout << left << setw(18) << uzsakymas.kategorija;
-    cout << left << setw(52) << uzsakymas.pavadinimas;
-    cout << right << setw(10) << uzsakymas.kaina;
-    cout << right << setw(8) << uzsakymas.kiekis;
+    cout << left << setw(18) << kategorijos[i];
+    cout << left << setw(52) << pavadinimai[i];
+    cout << right << setw(10) << kainos[i];
+    cout << right << setw(8) << kiekiai[i];
     cout << endl;
   }
 }
@@ -86,8 +68,8 @@ int chooseCategory(const string kategorijos[], int count) {
   }
 }
 
-void showCategory(int kiekis) {
-  int kategorija = chooseCategory(kategorijos, size(kategorijos));
+void showCategory(int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
+  int kategorija = chooseCategory(kategorijuVardai, size(kategorijuVardai));
 
   cout << left << setw(18) << "Kategorija";
   cout << left << setw(52) << "Pavadinimas";
@@ -96,15 +78,14 @@ void showCategory(int kiekis) {
   cout << endl;
 
   for (int i = 0; i < kiekis; i++) {
-    Uzsakymas uzsakymas = uzsakimai[i];
-    bool isSame = uzsakymas.kategorija == kategorijos[kategorija];
+    bool isSame = kategorijos[i] == kategorijuVardai[kategorija];
     if (!isSame)
       continue;
 
-    cout << left << setw(18) << uzsakymas.kategorija;
-    cout << left << setw(52) << uzsakymas.pavadinimas;
-    cout << right << setw(10) << uzsakymas.kaina;
-    cout << right << setw(8) << uzsakymas.kiekis;
+    cout << left << setw(18) << kategorijos[i];
+    cout << left << setw(52) << pavadinimai[i];
+    cout << right << setw(10) << kainos[i];
+    cout << right << setw(8) << kiekiai[i];
     cout << endl;
   }
 }
@@ -116,7 +97,7 @@ int gautiKaina(int vienetoKaina, int kiekis) {
     return vienetoKaina * kiekis;
 }
 
-void showReport(ostream &out, int kiekis) {
+void showReport(ostream &out, int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
   double suma = 0;
   double nuolaida = 0;
 
@@ -130,20 +111,19 @@ void showReport(ostream &out, int kiekis) {
   out << setw(15) << "Galutine Suma" << endl;
 
   for (int i = 0; i < kiekis; i++) {
-    Uzsakymas uzsakymas = uzsakimai[i];
-    double eilutesSuma = uzsakymas.kaina * uzsakymas.kiekis;
+    double eilutesSuma = kainos[i] * kiekiai[i];
     double eilutesNuolaida = 0;
-    if (uzsakymas.kiekis >= 10) {
+    if (kiekiai[i] >= 10) {
       eilutesNuolaida = eilutesSuma / NUOLAIDA;
     }
 
     suma += eilutesSuma;
     nuolaida += eilutesNuolaida;
 
-    out << left << setw(18) << uzsakymas.kategorija;
-    out << setw(52) << uzsakymas.pavadinimas;
-    out << right << fixed << setprecision(2) << setw(10) << uzsakymas.kaina;
-    out << setw(8) << uzsakymas.kiekis;
+    out << left << setw(18) << kategorijos[i];
+    out << setw(52) << pavadinimai[i];
+    out << right << fixed << setprecision(2) << setw(10) << kainos[i];
+    out << setw(8) << kiekiai[i];
     out << setw(15) << eilutesSuma;
     out << setw(15) << eilutesNuolaida;
     out << setw(15) << eilutesSuma - eilutesNuolaida << endl;
@@ -155,21 +135,21 @@ void showReport(ostream &out, int kiekis) {
   out << right << setw(98) << "Galutine suma:" << setw(15) << suma - nuolaida << endl;
 }
 
-void saveReport(int kiekis) {
+void saveReport(int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
   ofstream fs("ataskaita.txt");
   if (!fs) {
     cout << "Nepavyko sukurti ataskaitos failo." << endl;
     return;
   }
 
-  showReport(fs, kiekis);
+  showReport(fs, kiekis, kategorijos, pavadinimai, kainos, kiekiai);
   cout << "Ataskaita issaugota faile ataskaita.txt" << endl;
 }
 
-void calculatePrices(int kiekis, bool allCategories) {
+void calculatePrices(int kiekis, bool allCategories, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
     int kategorija;
     if(!allCategories) {
-        kategorija = chooseCategory(kategorijos, size(kategorijos));
+        kategorija = chooseCategory(kategorijuVardai, size(kategorijuVardai));
     }
 
     // int kainos[MAX_SIZE];
@@ -182,19 +162,18 @@ void calculatePrices(int kiekis, bool allCategories) {
   cout << endl;
 
   for(int i = 0; i < kiekis; i++) {
-      Uzsakymas uzsakymas = uzsakimai[i];
       double kaina = 0;
       double nuolaida = 0;
 
       if(!allCategories) {
-          bool isSame = uzsakymas.kategorija == kategorijos[kategorija];
+          bool isSame = kategorijos[i] == kategorijuVardai[kategorija];
           if(!isSame) continue;
       }
 
-      kaina = gautiKaina(uzsakymas.kaina, uzsakymas.kiekis);
-      if(uzsakymas.kiekis >= 10) nuolaida = (kaina / NUOLAIDA);
+      kaina = gautiKaina(kainos[i], kiekiai[i]);
+      if(kiekiai[i] >= 10) nuolaida = (kaina / NUOLAIDA);
 
-      cout << left << setw(52) << uzsakymas.pavadinimas;
+      cout << left << setw(52) << pavadinimai[i];
       cout << right << fixed << setprecision(2) << setw(15) << kaina;
       cout << right << fixed << setprecision(2) << setw(15) << nuolaida;
       cout << right << fixed << setprecision(2) << setw(15) <<  kaina - nuolaida;
@@ -203,7 +182,11 @@ void calculatePrices(int kiekis, bool allCategories) {
 }
 
 int main() {
-  int kiekis = readFile();
+  string kategorijos[MAX_SIZE];
+  string pavadinimai[MAX_SIZE];
+  double kainos[MAX_SIZE];
+  int kiekiai[MAX_SIZE];
+  int kiekis = readFile(kategorijos, pavadinimai, kainos, kiekiai);
   if (kiekis == -1) {
     cout << "Netinkamas failas! Kiekis per didelis";
     return 0;
@@ -229,18 +212,18 @@ int main() {
     }
 
     if (pasirinkimas == 1)
-      showAll(kiekis);
+      showAll(kiekis, kategorijos, pavadinimai, kainos, kiekiai);
 
     if (pasirinkimas == 2)
-      showCategory(kiekis);
+      showCategory(kiekis, kategorijos, pavadinimai, kainos, kiekiai);
     if (pasirinkimas == 3)
-      calculatePrices(kiekis, true);
+      calculatePrices(kiekis, true, kategorijos, pavadinimai, kainos, kiekiai);
     if (pasirinkimas == 4)
-      calculatePrices(kiekis, false);
+      calculatePrices(kiekis, false, kategorijos, pavadinimai, kainos, kiekiai);
     if (pasirinkimas == 5)
-      showReport(cout, kiekis);
+      showReport(cout, kiekis, kategorijos, pavadinimai, kainos, kiekiai);
     if (pasirinkimas == 6)
-      saveReport(kiekis);
+      saveReport(kiekis, kategorijos, pavadinimai, kainos, kiekiai);
     if (pasirinkimas == 7)
       break;
 
