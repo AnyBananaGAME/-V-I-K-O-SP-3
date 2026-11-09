@@ -93,7 +93,7 @@ void showCategory(int kiekis, const string kategorijos[], const string pavadinim
 // Skaičiavimo funkcijos turi priimti reikalingus duomenis per parametrus
 // ir grąžinti apskaičiuotas reikšmes, kurios panaudojamos programoje.
 // Duomenims tarp funkcijų perduoti nenaudoti globalių kintamųjų.
-int gautiKaina(int vienetoKaina, int kiekis) {
+double gautiKaina(double vienetoKaina, int kiekis) {
     return vienetoKaina * kiekis;
 }
 
@@ -167,6 +167,11 @@ void saveReport(int kiekis, const string kategorijos[], const string pavadinimai
   }
 
   showReport(fs, kiekis, kategorijos, pavadinimai, kainos, kiekiai);
+  if (!fs) {
+    cout << "Nepavyko irasyti ataskaitos i faila." << endl;
+    return;
+  }
+
   cout << "Ataskaita issaugota faile ataskaita.txt" << endl;
 }
 
