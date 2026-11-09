@@ -27,6 +27,7 @@ int readFile() {
     Uzsakymas uzsakymas;
     string temp;
 
+    fs >> ws;
     getline(fs, uzsakymas.kategorija, ';');
     getline(fs, uzsakymas.pavadinimas, ';');
     fs >> uzsakymas.kaina;
@@ -50,20 +51,60 @@ void showAll(int kiekis) {
   cout << right << fixed << setprecision(2) << setw(8) << "Kiekis";
   cout << endl;
 
-  for(int i = 0; i < kiekis; i++){
-      Uzsakymas uzsakymas = uzsakimai[i];
+  for (int i = 0; i < kiekis; i++) {
+    Uzsakymas uzsakymas = uzsakimai[i];
 
-      cout << left << setw(18) << uzsakymas.kategorija;
-      cout << left << setw(52) << uzsakymas.pavadinimas;
-      cout << right << setw(10) << uzsakymas.kaina;
-      cout << right << setw(8) << uzsakymas.kiekis;
-      cout << endl;
+    cout << left << setw(18) << uzsakymas.kategorija;
+    cout << left << setw(52) << uzsakymas.pavadinimas;
+    cout << right << setw(10) << uzsakymas.kaina;
+    cout << right << setw(8) << uzsakymas.kiekis;
+    cout << endl;
+  }
+}
+
+void showCategory(int kiekis) {
+  string kategorijos[3] = {"Dviraciai", "Dalys", "Aksesuarai"};
+  int kategorija;
+
+  cout << "Pasirinkite Kategorija: " << endl;
+  for (int i = 0; i < size(kategorijos); i++) {
+    cout << i + 1 << ". " << kategorijos[i] << endl;
+  }
+
+  while (true) {
+    cin >> kategorija;
+    if (cin.fail() || kategorija < 0 || kategorija > size(kategorijos)) {
+      cin.clear();
+      cin.ignore(99999999, '\n');
+      cout << "Invalid category." << endl;
+      continue;
+    } else {
+      kategorija = kategorija - 1;
+      break;
+    }
+  }
+
+  cout << left << setw(18) << "Kategorija";
+  cout << left << setw(52) << "Pavadinimas";
+  cout << right << fixed << setprecision(2) << setw(10) << "Kaina";
+  cout << right << fixed << setprecision(2) << setw(8) << "Kiekis";
+  cout << endl;
+
+  for (int i = 0; i < kiekis; i++) {
+    Uzsakymas uzsakymas = uzsakimai[i];
+    bool isSame = uzsakymas.kategorija == kategorijos[kategorija];
+    if (!isSame)
+        continue;
+
+    cout << left << setw(18) << uzsakymas.kategorija;
+    cout << left << setw(52) << uzsakymas.pavadinimas;
+    cout << right << setw(10) << uzsakymas.kaina;
+    cout << right << setw(8) << uzsakymas.kiekis;
+    cout << endl;
   }
 }
 
 int main() {
-  std::cout << "Hello, world!\n";
-
   int kiekis = readFile();
   if (kiekis == -1) {
     cout << "Netinkamas failas! Kiekis per didelis";
@@ -89,7 +130,6 @@ int main() {
 
     if (pasirinkimas == 2)
       showCategory(kiekis);
-
   }
   return 0;
 }
