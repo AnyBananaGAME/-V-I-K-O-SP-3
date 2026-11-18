@@ -1,0 +1,4 @@
+BasedOnStyle: LLVM
+BreakFunctionDefinitionParameters: true
+BinPackParameters: false
+ContinuationIndentWidth: 3

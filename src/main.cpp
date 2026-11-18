@@ -11,7 +11,8 @@ const int NUOLAIDA = 10;
 
 const string kategorijuVardai[3] = {"Dviraciai", "Dalys", "Aksesuarai"};
 
-int readFile(string kategorijos[], string pavadinimai[], double kainos[], int kiekiai[]) {
+int readFile(
+   string kategorijos[], string pavadinimai[], double kainos[], int kiekiai[]) {
   ifstream fs("uzsakymas.txt");
   int kiekis;
   char trash;
@@ -32,7 +33,12 @@ int readFile(string kategorijos[], string pavadinimai[], double kainos[], int ki
   return kiekis;
 }
 
-void showAll(int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
+void showAll(
+   int kiekis,
+   const string kategorijos[],
+   const string pavadinimai[],
+   const double kainos[],
+   const int kiekiai[]) {
   cout << left << setw(18) << "Kategorija";
   cout << left << setw(52) << "Pavadinimas";
   cout << right << fixed << setprecision(2) << setw(10) << "Kaina";
@@ -48,7 +54,8 @@ void showAll(int kiekis, const string kategorijos[], const string pavadinimai[],
   }
 }
 
-int chooseCategory(const string kategorijos[], int count) {
+int chooseCategory(
+   const string kategorijos[], int count) {
   int kategorija;
 
   cout << "Pasirinkite Kategorija:" << endl;
@@ -68,7 +75,12 @@ int chooseCategory(const string kategorijos[], int count) {
   }
 }
 
-void showCategory(int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
+void showCategory(
+   int kiekis,
+   const string kategorijos[],
+   const string pavadinimai[],
+   const double kainos[],
+   const int kiekiai[]) {
   int kategorija = chooseCategory(kategorijuVardai, size(kategorijuVardai));
 
   cout << left << setw(18) << "Kategorija";
@@ -99,13 +111,17 @@ void showCategory(int kiekis, const string kategorijos[], const string pavadinim
 // Skaičiavimo funkcijos turi priimti reikalingus duomenis per parametrus
 // ir grąžinti apskaičiuotas reikšmes, kurios panaudojamos programoje.
 // Duomenims tarp funkcijų perduoti nenaudoti globalių kintamųjų.
-double gautiKaina(double vienetoKaina, int kiekis) {
-    return vienetoKaina * kiekis;
+double gautiKaina(
+   double vienetoKaina, int kiekis) {
+  return vienetoKaina * kiekis;
 }
 
-double calculateCategoryTotal(string pasirinktaKategorija, int kiekis,
-                              const string kategorijos[], const double kainos[],
-                              const int kiekiai[]) {
+double calculateCategoryTotal(
+   string pasirinktaKategorija,
+   int kiekis,
+   const string kategorijos[],
+   const double kainos[],
+   const int kiekiai[]) {
   double suma = 0;
   for (int i = 0; i < kiekis; i++) {
     if (kategorijos[i] == pasirinktaKategorija) {
@@ -120,7 +136,13 @@ double calculateCategoryTotal(string pasirinktaKategorija, int kiekis,
   return suma;
 }
 
-void showReport(ostream &out, int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
+void showReport(
+   ostream &out,
+   int kiekis,
+   const string kategorijos[],
+   const string pavadinimai[],
+   const double kainos[],
+   const int kiekiai[]) {
   double suma = 0;
   double nuolaida = 0;
 
@@ -155,17 +177,24 @@ void showReport(ostream &out, int kiekis, const string kategorijos[], const stri
   out << string(135, '-') << endl;
   out << right << setw(98) << "Uzsakymo suma:" << setw(15) << suma << endl;
   out << right << setw(98) << "Nuolaida:" << setw(15) << nuolaida << endl;
-  out << right << setw(98) << "Galutine suma:" << setw(15) << suma - nuolaida << endl;
+  out << right << setw(98) << "Galutine suma:" << setw(15) << suma - nuolaida
+      << endl;
   out << endl << "Sumos pagal kategorijas" << endl;
   for (int i = 0; i < size(kategorijuVardai); i++) {
-    out << right << setw(98) << kategorijuVardai[i]
-        << fixed << setprecision(2) << setw(15)
-        << calculateCategoryTotal(kategorijuVardai[i], kiekis, kategorijos, kainos, kiekiai)
+    out << right << setw(97) << kategorijuVardai[i] << ":" << fixed
+        << setprecision(2) << setw(15)
+        << calculateCategoryTotal(kategorijuVardai[i], kiekis, kategorijos,
+                                  kainos, kiekiai)
         << endl;
   }
 }
 
-void saveReport(int kiekis, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
+void saveReport(
+   int kiekis,
+   const string kategorijos[],
+   const string pavadinimai[],
+   const double kainos[],
+   const int kiekiai[]) {
   ofstream fs("ataskaita.txt");
   if (!fs) {
     cout << "Nepavyko sukurti ataskaitos failo." << endl;
@@ -181,13 +210,19 @@ void saveReport(int kiekis, const string kategorijos[], const string pavadinimai
   cout << "Ataskaita issaugota faile ataskaita.txt" << endl;
 }
 
-void calculatePrices(int kiekis, bool allCategories, const string kategorijos[], const string pavadinimai[], const double kainos[], const int kiekiai[]) {
-    int kategorija;
-    if(!allCategories) {
-        kategorija = chooseCategory(kategorijuVardai, size(kategorijuVardai));
-    }
+void calculatePrices(
+   int kiekis,
+   bool allCategories,
+   const string kategorijos[],
+   const string pavadinimai[],
+   const double kainos[],
+   const int kiekiai[]) {
+  int kategorija;
+  if (!allCategories) {
+    kategorija = chooseCategory(kategorijuVardai, size(kategorijuVardai));
+  }
 
-    // int kainos[MAX_SIZE];
+  // int kainos[MAX_SIZE];
   // int nuolaidos[MAX_SIZE];
   // cout << left << setw(18) << "Kategorija";
   cout << left << setw(52) << "Pavadinimas";
@@ -196,23 +231,25 @@ void calculatePrices(int kiekis, bool allCategories, const string kategorijos[],
   cout << right << fixed << setprecision(2) << setw(15) << "Galutine Suma";
   cout << endl;
 
-  for(int i = 0; i < kiekis; i++) {
-      double kaina = 0;
-      double nuolaida = 0;
+  for (int i = 0; i < kiekis; i++) {
+    double kaina = 0;
+    double nuolaida = 0;
 
-      if(!allCategories) {
-          bool isSame = kategorijos[i] == kategorijuVardai[kategorija];
-          if(!isSame) continue;
-      }
+    if (!allCategories) {
+      bool isSame = kategorijos[i] == kategorijuVardai[kategorija];
+      if (!isSame)
+        continue;
+    }
 
-      kaina = gautiKaina(kainos[i], kiekiai[i]);
-      if(kiekiai[i] >= 10) nuolaida = (kaina / NUOLAIDA);
+    kaina = gautiKaina(kainos[i], kiekiai[i]);
+    if (kiekiai[i] >= 10)
+      nuolaida = (kaina / NUOLAIDA);
 
-      cout << left << setw(52) << pavadinimai[i];
-      cout << right << fixed << setprecision(2) << setw(15) << kaina;
-      cout << right << fixed << setprecision(2) << setw(15) << nuolaida;
-      cout << right << fixed << setprecision(2) << setw(15) <<  kaina - nuolaida;
-      cout << endl;
+    cout << left << setw(52) << pavadinimai[i];
+    cout << right << fixed << setprecision(2) << setw(15) << kaina;
+    cout << right << fixed << setprecision(2) << setw(15) << nuolaida;
+    cout << right << fixed << setprecision(2) << setw(15) << kaina - nuolaida;
+    cout << endl;
   }
 }
 
@@ -232,7 +269,9 @@ int main() {
     cout << "1. Perziureti visas prekes" << endl;
     cout << "2. Perziureti tam skirta kategorija prekes" << endl;
     cout << "3. Suskaiciuoti suma, akcijas bei galutine suma." << endl;
-    cout << "4. Suskaiciuoti suma, akcijas bei galutine suma tam skirtai kategirijai." << endl;
+    cout << "4. Suskaiciuoti suma, akcijas bei galutine suma tam skirtai "
+            "kategirijai."
+         << endl;
     cout << "5. Perziureti ataskaita." << endl;
     cout << "6. Issaugoti visa ataskaita i faila." << endl;
     cout << "7. Iseiti." << endl;
@@ -261,7 +300,6 @@ int main() {
       saveReport(kiekis, kategorijos, pavadinimai, kainos, kiekiai);
     if (pasirinkimas == 7)
       break;
-
   }
   return 0;
 }
